@@ -4,110 +4,52 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#07101c" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
 <title>Decision Matrix Engine — Live Test</title>
 <style>
-  :root {
-    --bg: #07101c;
-    --bg2: #0c1828;
-    --panel: #102033;
-    --panel2: #152a42;
-    --line: #23405f;
-    --gold: #d4b15a;
-    --gold2: #f0d48a;
-    --teal: #4ecdc4;
-    --danger: #e26d6d;
-    --ok: #6fbf73;
-    --warn: #e0a24a;
-    --text: #e8eef6;
-    --muted: #8aa0b8;
-    --shadow: 0 10px 30px rgba(0,0,0,.35);
-    --radius: 14px;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font: 15px/1.45 "Segoe UI", system-ui, sans-serif; }
-  body { background:
-    radial-gradient(1200px 500px at 10% -10%, rgba(212,177,90,.08), transparent 50%),
-    radial-gradient(800px 400px at 100% 0%, rgba(78,205,196,.06), transparent 45%),
-    var(--bg); }
-  header {
-    position: sticky; top: 0; z-index: 20;
-    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-    padding: 10px 14px; border-bottom: 1px solid var(--line);
-    background: rgba(7,16,28,.92); backdrop-filter: blur(10px);
-  }
-  .mark { width: 34px; height: 34px; border: 1px solid var(--gold); position: relative; flex: 0 0 auto; }
-  .mark:before, .mark:after { content: ""; position: absolute; background: var(--gold); }
-  .mark:before { left: 50%; top: 4px; bottom: 4px; width: 1px; transform: translateX(-50%); }
-  .mark:after { top: 50%; left: 4px; right: 4px; height: 1px; transform: translateY(-50%); }
-  h1 { font-size: 15px; margin: 0; letter-spacing: .08em; text-transform: uppercase; color: var(--gold2); }
-  .sub { color: var(--muted); font-size: 12px; }
-  .hdr-actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
-  button, .btn {
-    appearance: none; border: 1px solid var(--line); background: var(--panel);
-    color: var(--text); border-radius: 10px; padding: 8px 12px; cursor: pointer;
-    font: inherit; min-height: 40px;
-  }
-  button.primary { background: linear-gradient(180deg, #3a2c10, #2a210d); border-color: var(--gold); color: var(--gold2); }
-  button.ok { border-color: #2d6a36; color: #b7e0b8; }
-  button.danger { border-color: #7a3333; color: #f0b3b3; }
-  button.ghost { background: transparent; }
-  button:disabled { opacity: .45; cursor: not-allowed; }
-  nav.tabs {
-    display: flex; gap: 4px; overflow-x: auto; padding: 8px 12px;
-    border-bottom: 1px solid var(--line); -webkit-overflow-scrolling: touch;
-  }
-  nav.tabs button { white-space: nowrap; padding: 8px 12px; border-radius: 999px; font-size: 13px; }
-  nav.tabs button.active { border-color: var(--gold); color: var(--gold2); background: #1b2a18; }
-  main { max-width: 1180px; margin: 0 auto; padding: 14px 12px 90px; }
-  .grid { display: grid; gap: 12px; }
-  @media (min-width: 860px) { .cols-2 { grid-template-columns: 1.2fr .8fr; } .cols-3 { grid-template-columns: repeat(3, 1fr); } }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); }
-  .card h2, .card h3 { margin: 0 0 8px; font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
-  label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 4px; }
-  input, textarea, select {
-    width: 100%; background: var(--bg2); color: var(--text); border: 1px solid var(--line);
-    border-radius: 10px; padding: 10px; font: inherit;
-  }
-  textarea { min-height: 72px; resize: vertical; }
-  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .kpi { background: var(--panel2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
-  .kpi b { display: block; font-size: 22px; color: var(--gold2); }
-  .kpi span { color: var(--muted); font-size: 12px; }
-  .loop { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 8px; }
-  .loop .step { flex: 0 0 auto; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); }
-  .loop .step.on { border-color: var(--gold); color: var(--gold2); }
-  .loop .step.done { border-color: #2d6a36; color: #b7e0b8; }
-  .opt { border: 1px solid var(--line); background: var(--bg2); border-radius: 12px; padding: 12px; margin-top: 10px; }
-  .opt.best { outline: 1px solid var(--gold); }
-  .score { font-variant-numeric: tabular-nums; color: var(--teal); font-weight: 700; }
-  .slider-row { display: grid; grid-template-columns: 130px 1fr 36px; gap: 8px; align-items: center; font-size: 12px; }
-  .slider-row input[type=range] { width: 100%; }
-  .muted { color: var(--muted); }
-  .tiny { font-size: 12px; color: var(--muted); }
-  .pill { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; font-size: 11px; color: var(--muted); }
-  .pill.gold { border-color: var(--gold); color: var(--gold2); }
-  .pill.ok { border-color: #2d6a36; color: #b7e0b8; }
-  .pill.warn { border-color: var(--warn); color: var(--warn); }
-  .pill.bad { border-color: var(--danger); color: var(--danger); }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; }
-  .audit { max-height: 420px; overflow: auto; }
-  .audit .item { padding: 8px 0; border-bottom: 1px solid var(--line); }
-  .toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: #13253c; border: 1px solid var(--gold); color: var(--gold2); padding: 10px 14px; border-radius: 10px; display: none; z-index: 50; }
-  footer.note { margin-top: 18px; color: var(--muted); font-size: 12px; }
-  .rule { border-left: 3px solid var(--gold); padding: 8px 10px; background: var(--bg2); margin: 8px 0; border-radius: 0 10px 10px 0; }
-  .hidden { display: none !important; }
+:root{--bg:#07101c;--bg2:#0c1828;--panel:#102033;--panel2:#152a42;--line:#23405f;--gold:#d4b15a;--gold2:#f0d48a;--teal:#4ecdc4;--danger:#e26d6d;--ok:#6fbf73;--warn:#e0a24a;--text:#e8eef6;--muted:#8aa0b8;--shadow:0 10px 30px rgba(0,0,0,.35);--radius:14px}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:15px/1.45 Segoe UI,system-ui,sans-serif}
+body{background:radial-gradient(1200px 500px at 10% -10%,rgba(212,177,90,.08),transparent 50%),radial-gradient(800px 400px at 100% 0,rgba(78,205,196,.06),transparent 45%),var(--bg)}
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);background:rgba(7,16,28,.92)}
+.mark{width:34px;height:34px;border:1px solid var(--gold);position:relative;flex:0 0 auto}
+.mark:before,.mark:after{content:"";position:absolute;background:var(--gold)}
+.mark:before{left:50%;top:4px;bottom:4px;width:1px;transform:translateX(-50%)}
+.mark:after{top:50%;left:4px;right:4px;height:1px;transform:translateY(-50%)}
+h1{font-size:15px;margin:0;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2)}
+.sub{color:var(--muted);font-size:12px}.hdr-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+button{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:8px 12px;cursor:pointer;font:inherit;min-height:40px}
+button.primary{background:linear-gradient(180deg,#3a2c10,#2a210d);border-color:var(--gold);color:var(--gold2)}
+button.ok{border-color:#2d6a36;color:#b7e0b8}button.danger{border-color:#7a3333;color:#f0b3b3}button.ghost{background:transparent}button:disabled{opacity:.45;cursor:not-allowed}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;padding:8px 12px;border-bottom:1px solid var(--line)}
+nav.tabs button{white-space:nowrap;padding:8px 12px;border-radius:999px;font-size:13px}
+nav.tabs button.active{border-color:var(--gold);color:var(--gold2);background:#1b2a18}
+main{max-width:1180px;margin:0 auto;padding:14px 12px 90px}.grid{display:grid;gap:12px}
+@media(min-width:860px){.cols-2{grid-template-columns:1.2fr .8fr}.cols-3{grid-template-columns:repeat(3,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+.card h2,.card h3{margin:0 0 8px;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+input,textarea,select{width:100%;background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit}
+textarea{min-height:72px;resize:vertical}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}.kpi b{display:block;font-size:22px;color:var(--gold2)}.kpi span{color:var(--muted);font-size:12px}
+.loop{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px}.loop .step{flex:0 0 auto;font-size:11px;letter-spacing:.04em;text-transform:uppercase;padding:6px 8px;border:1px solid var(--line);border-radius:8px;color:var(--muted)}
+.loop .step.on{border-color:var(--gold);color:var(--gold2)}.loop .step.done{border-color:#2d6a36;color:#b7e0b8}
+.opt{border:1px solid var(--line);background:var(--bg2);border-radius:12px;padding:12px;margin-top:10px}.opt.best{outline:1px solid var(--gold)}
+.score{font-variant-numeric:tabular-nums;color:var(--teal);font-weight:700}
+.slider-row{display:grid;grid-template-columns:130px 1fr 36px;gap:8px;align-items:center;font-size:12px}
+.tiny,.muted{font-size:12px;color:var(--muted)}
+.pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:11px;color:var(--muted)}
+.pill.gold{border-color:var(--gold);color:var(--gold2)}.pill.ok{border-color:#2d6a36;color:#b7e0b8}.pill.warn{border-color:var(--warn);color:var(--warn)}.pill.bad{border-color:var(--danger);color:var(--danger)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase}
+.audit{max-height:420px;overflow:auto}.audit .item{padding:8px 0;border-bottom:1px solid var(--line)}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#13253c;border:1px solid var(--gold);color:var(--gold2);padding:10px 14px;border-radius:10px;display:none;z-index:50}
+footer.note{margin-top:18px;color:var(--muted);font-size:12px}
+.rule{border-left:3px solid var(--gold);padding:8px 10px;background:var(--bg2);margin:8px 0;border-radius:0 10px 10px 0}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
 <header>
   <div class="mark" aria-hidden="true"></div>
-  <div>
-    <h1>Decision Matrix Engine</h1>
-    <div class="sub">Live test · recursive calibration · v0.1 demo</div>
-  </div>
+  <div><h1>Decision Matrix Engine</h1><div class="sub">Live test · recursive calibration · v0.1.1</div></div>
   <div class="hdr-actions">
     <button class="primary" id="btnNew">New decision</button>
     <button class="ghost" id="btnDemo">Load sample</button>
@@ -122,433 +64,143 @@
   <button data-tab="audit">Audit trail</button>
 </nav>
 <main>
-  <section id="tab-board">
-    <div class="grid cols-3" id="kpis"></div>
-    <div class="card" style="margin-top:12px">
-      <h2>Open cases</h2>
-      <p class="tiny">The engine does not ask only “what should you do?” It asks what was predicted, what happened, where the model was wrong, and what should change — without silently rewriting itself.</p>
-      <div id="caseList"></div>
-    </div>
-  </section>
-  <section id="tab-work" class="hidden">
-    <div class="loop" id="loopRail"></div>
-    <div class="grid cols-2">
-      <div class="card" id="workLeft"></div>
-      <div class="card" id="workRight"></div>
-    </div>
-  </section>
-  <section id="tab-rules" class="hidden">
-    <div class="card">
-      <h2>Promotion gate</h2>
-      <p class="tiny">Observed fact → inference → proposed adjustment → validation → active rule. Proposed rules never become law by themselves.</p>
-      <div id="rulesBox"></div>
-    </div>
-  </section>
-  <section id="tab-calib" class="hidden">
-    <div class="grid cols-3" id="calibKpis"></div>
-    <div class="card" style="margin-top:12px">
-      <h2>Confidence vs contact with reality</h2>
-      <div id="calibBox"></div>
-    </div>
-  </section>
-  <section id="tab-audit" class="hidden">
-    <div class="card">
-      <h2>Versioned history</h2>
-      <div class="audit" id="auditBox"></div>
-    </div>
-  </section>
-  <footer class="note">Local-only demo. State lives in this browser (localStorage). No oracle pretence: scores are instruments, outcomes are evidence, rules stay gated.</footer>
+  <section id="tab-board"><div class="grid cols-3" id="kpis"></div>
+    <div class="card" style="margin-top:12px"><h2>Open cases</h2>
+      <p class="tiny">The engine does not ask only what you should do. It asks what was predicted, what happened, where the model was wrong, and what should change — without silently rewriting itself.</p>
+      <div id="caseList"></div></div></section>
+  <section id="tab-work" class="hidden"><div class="loop" id="loopRail"></div>
+    <div class="grid cols-2"><div class="card" id="workLeft"></div><div class="card" id="workRight"></div></div></section>
+  <section id="tab-rules" class="hidden"><div class="card"><h2>Promotion gate</h2>
+    <p class="tiny">Observed fact → inference → proposed adjustment → validation → active rule.</p>
+    <div id="rulesBox"></div></div></section>
+  <section id="tab-calib" class="hidden"><div class="grid cols-3" id="calibKpis"></div>
+    <div class="card" style="margin-top:12px"><h2>Confidence vs contact with reality</h2><div id="calibBox"></div></div></section>
+  <section id="tab-audit" class="hidden"><div class="card"><h2>Versioned history</h2><div class="audit" id="auditBox"></div></div></section>
+  <footer class="note">State lives in this browser. Scores are instruments. Outcomes are evidence. Rules stay gated.</footer>
 </main>
 <div class="toast" id="toast"></div>
 <script>
-const STEPS = ["decide","predict","act","observe","error","update","revise","next"];
-const STEP_LABEL = {decide:"Decision",predict:"Prediction",act:"Action",observe:"Outcome",error:"Error",update:"Evidence",revise:"Matrix revision",next:"Next decision"};
-const DIMS = [
-  ["constraints","Constraints fit"],
-  ["confidence","Confidence"],
-  ["evidence","Evidence strength"],
-  ["reversibility","Reversibility"],
-  ["control","Strategic control"],
-  ["first","1st-order value"],
-  ["second","2nd-order risk (invert)"],
-  ["third","3rd-order risk (invert)"],
-  ["downside","Downside exposure (invert)"]
-];
-const DEFAULT_WEIGHTS = {constraints:1.2,confidence:.8,evidence:.8,reversibility:1,control:1.1,first:1.1,second:.9,third:.7,downside:1};
-const storeKey = "dme_live_v1";
-let S = load();
-let currentId = S.decisions[0] ? S.decisions[0].id : null;
-let tab = "board";
-function uid(){ return "d"+Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4); }
-function now(){ return new Date().toISOString(); }
-function load(){
-  try { const x = JSON.parse(localStorage.getItem(storeKey)); if(x && x.decisions) return x; } catch(e){}
-  return seed();
-}
-function save(){ localStorage.setItem(storeKey, JSON.stringify(S)); }
-function audit(kind, detail, extra){
-  S.audit.unshift({t:now(), kind, detail, extra: extra||null, matrixVersion: S.matrixVersion});
-  save();
-}
-function toast(msg){
-  const el = document.getElementById("toast");
-  el.textContent = msg; el.style.display = "block";
-  setTimeout(()=>el.style.display="none", 2200);
-}
+const STEPS=["decide","predict","act","observe","error","update","revise","next"];
+const STEP_LABEL={decide:"Decision",predict:"Prediction",act:"Action",observe:"Outcome",error:"Error",update:"Evidence",revise:"Matrix revision",next:"Next decision"};
+const DIMS=[["constraints","Constraints fit"],["confidence","Confidence"],["evidence","Evidence strength"],["reversibility","Reversibility"],["control","Strategic control"],["first","1st-order value"],["second","2nd-order risk (invert)"],["third","3rd-order risk (invert)"],["downside","Downside exposure (invert)"]];
+const DEFAULT_WEIGHTS={constraints:1.2,confidence:.8,evidence:.8,reversibility:1,control:1.1,first:1.1,second:.9,third:.7,downside:1};
+const storeKey="dme_live_v1";
+let S=null, currentId=null, tab="board";
+function uid(){return "d"+Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4)}
+function now(){return new Date().toISOString()}
+function load(){try{const x=JSON.parse(localStorage.getItem(storeKey)); if(x&&x.decisions) return x;}catch(e){} return seed();}
+function save(){try{localStorage.setItem(storeKey, JSON.stringify(S));}catch(e){}}
+function audit(kind,detail,extra){S.audit.unshift({t:now(),kind,detail,extra:extra||null,matrixVersion:S.matrixVersion}); save();}
+function toast(msg){const el=document.getElementById("toast"); el.textContent=msg; el.style.display="block"; setTimeout(()=>el.style.display="none",2200);}
 function seed(){
-  const d = blankDecision("Public live test vs closed alpha");
-  d.context = "We have a working Decision Matrix Engine. Choose how to put it in contact with reality this week.";
-  d.constraints = ["Must run on mobile and desktop","Must preserve gated rule promotion","Must produce an audit trail","Must not pretend to be an oracle"];
-  d.options = [
-    opt("Ship public live-test HTML","Highest contact with reality; fastest error collection.", {constraints:8,confidence:7,evidence:6,reversibility:7,control:6,first:9,second:6,third:5,downside:5}),
-    opt("Private alpha with 5 operators","Cleaner data, slower calibration, more control.", {constraints:8,confidence:8,evidence:7,reversibility:8,control:8,first:6,second:3,third:3,downside:3}),
-    opt("Hold for backend + accounts","Richer system, delayed evidence, higher build risk.", {constraints:5,confidence:5,evidence:4,reversibility:4,control:7,first:4,second:7,third:6,downside:7})
+  const d=blankDecision("Public live test vs closed alpha");
+  d.context="We have a working Decision Matrix Engine. Choose how to put it in contact with reality this week.";
+  d.constraints=["Must run on mobile and desktop","Must preserve gated rule promotion","Must produce an audit trail","Must not pretend to be an oracle"];
+  d.options=[
+    opt("Ship public live-test HTML","Highest contact with reality; fastest error collection.",{constraints:8,confidence:7,evidence:6,reversibility:7,control:6,first:9,second:6,third:5,downside:5}),
+    opt("Private alpha with 5 operators","Cleaner data, slower calibration, more control.",{constraints:8,confidence:8,evidence:7,reversibility:8,control:8,first:6,second:3,third:3,downside:3}),
+    opt("Hold for backend + accounts","Richer system, delayed evidence, higher build risk.",{constraints:5,confidence:5,evidence:4,reversibility:4,control:7,first:4,second:7,third:6,downside:7})
   ];
-  d.status = "decide";
-  d.matrixVersion = 1;
-  return {
-    matrixVersion: 1,
-    weights: Object.assign({}, DEFAULT_WEIGHTS),
-    decisions: [d],
-    rules: { proposed: [
-      {id:uid(), status:"proposed", text:"If reversibility < 4 and downside > 7, require a kill-switch before lock.", reason:"Seeded precaution", created:now(), evidence:[]}
-    ], active: [
-      {id:uid(), status:"active", text:"Never auto-promote a rule from a single surprise. Require validation.", reason:"Architecture invariant", created:now(), activated:now(), evidence:["canon"]}
-    ], rejected: [] },
-    audit: [{t:now(), kind:"system", detail:"Engine initialized for live test", extra:null, matrixVersion:1}]
-  };
+  return {matrixVersion:1,weights:Object.assign({},DEFAULT_WEIGHTS),decisions:[d],rules:{proposed:[{id:uid(),status:"proposed",text:"If reversibility < 4 and downside > 7, require a kill-switch before lock.",reason:"Seeded precaution",created:now(),evidence:[]}],active:[{id:uid(),status:"active",text:"Never auto-promote a rule from a single surprise. Require validation.",reason:"Architecture invariant",created:now(),activated:now(),evidence:["canon"]}],rejected:[]},audit:[{t:now(),kind:"system",detail:"Engine initialized for live test",extra:null,matrixVersion:1}]};
 }
-function opt(name, notes, scores){
-  return {id:uid(), name, notes, scores};
-}
+function opt(name,notes,scores){return {id:uid(),name,notes,scores}}
 function blankDecision(title){
-  return {
-    id: uid(), title: title||"Untitled decision", context:"", constraints:[],
-    options: [opt("Option A","", {constraints:5,confidence:5,evidence:5,reversibility:5,control:5,first:5,second:5,third:5,downside:5}),
-              opt("Option B","", {constraints:5,confidence:5,evidence:5,reversibility:5,control:5,first:5,second:5,third:5,downside:5})],
-    selectedOptionId: null,
-    prediction: {statement:"", e1:"", e2:"", e3:"", confidence:60, lockedAt:null},
-    action: {what:"", when:"", loggedAt:null},
-    outcome: {observed:"", o1:"", o2:"", o3:"", unexpected:"", match:50, loggedAt:null},
-    error: {predictionError:null, analysis:"", whereWrong:""},
-    proposals: [],
-    status: "decide",
-    matrixVersion: S ? S.matrixVersion : 1,
-    history: []
-  };
+  return {id:uid(),title:title||"Untitled decision",context:"",constraints:[],
+    options:[opt("Option A","",{constraints:5,confidence:5,evidence:5,reversibility:5,control:5,first:5,second:5,third:5,downside:5}),opt("Option B","",{constraints:5,confidence:5,evidence:5,reversibility:5,control:5,first:5,second:5,third:5,downside:5})],
+    selectedOptionId:null,prediction:{statement:"",e1:"",e2:"",e3:"",confidence:60,lockedAt:null},action:{what:"",when:"",loggedAt:null},outcome:{observed:"",o1:"",o2:"",o3:"",unexpected:"",match:50,loggedAt:null},error:{predictionError:null,analysis:"",whereWrong:""},proposals:[],status:"decide",matrixVersion:1,history:[]};
 }
-function invert(v){ return 10 - Number(v||0); }
-function scoreOption(o, w){
-  w = w || S.weights;
-  const s = o.scores;
-  const parts = {
-    constraints: s.constraints * w.constraints,
-    confidence: s.confidence * w.confidence,
-    evidence: s.evidence * w.evidence,
-    reversibility: s.reversibility * w.reversibility,
-    control: s.control * w.control,
-    first: s.first * w.first,
-    second: invert(s.second) * w.second,
-    third: invert(s.third) * w.third,
-    downside: invert(s.downside) * w.downside
-  };
-  const num = Object.values(parts).reduce((a,b)=>a+b,0);
-  const den = Object.values(w).reduce((a,b)=>a+b,0);
-  return Math.round((num/den)*10)/10;
+function invert(v){return 10-Number(v||0)}
+function scoreOption(o,w){w=w||(S&&S.weights)||DEFAULT_WEIGHTS; const s=o.scores; const parts={constraints:s.constraints*w.constraints,confidence:s.confidence*w.confidence,evidence:s.evidence*w.evidence,reversibility:s.reversibility*w.reversibility,control:s.control*w.control,first:s.first*w.first,second:invert(s.second)*w.second,third:invert(s.third)*w.third,downside:invert(s.downside)*w.downside}; return Math.round(Object.values(parts).reduce((a,b)=>a+b,0)/Object.values(w).reduce((a,b)=>a+b,0)*10)/10;}
+function cur(){return S.decisions.find(d=>d.id===currentId)||null}
+function setStatus(d,st){d.status=st; d.history.push({t:now(),status:st,version:S.matrixVersion}); audit("status", d.title+" -> "+st);}
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"'":"&#39;","&":"&","<":"<",">":">","\"":"""}[c]));}
+function bindChrome(){
+  document.getElementById("tabs").onclick=e=>{const b=e.target.closest("button[data-tab]"); if(!b) return; tab=b.dataset.tab; render();};
+  document.getElementById("btnNew").onclick=()=>{const d=blankDecision("New decision"); S.decisions.unshift(d); currentId=d.id; tab="work"; audit("create","New decision opened"); save(); render();};
+  document.getElementById("btnDemo").onclick=()=>{if(!confirm("Replace local demo state with the seeded live-test case?")) return; S=seed(); currentId=S.decisions[0].id; tab="board"; save(); render(); toast("Sample loaded");};
+  document.getElementById("btnExport").onclick=()=>{const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:"application/json"})); a.download="decision-matrix-engine.json"; a.click();};
 }
-function cur(){ return S.decisions.find(d=>d.id===currentId) || null; }
-function setStatus(d, st){
-  d.status = st;
-  d.history.push({t:now(), status:st, version:S.matrixVersion});
-  audit("status", d.title+" → "+st);
-}
-function esc(s){ return String(s||"").replace(/[&<>"']/g, c=>({"&":"&","<":"<",">":">","\"":""","'":"&#39;"}[c])); }
-document.getElementById("tabs").addEventListener("click", e=>{
-  const b = e.target.closest("button[data-tab]"); if(!b) return;
-  tab = b.dataset.tab;
-  render();
-});
-document.getElementById("btnNew").onclick = ()=>{
-  const d = blankDecision("New decision");
-  S.decisions.unshift(d); currentId = d.id; tab="work";
-  audit("create", "New decision opened"); save(); render();
-};
-document.getElementById("btnDemo").onclick = ()=>{
-  if(!confirm("Replace local demo state with the seeded live-test case?")) return;
-  S = seed(); currentId = S.decisions[0].id; tab="board"; save(); render(); toast("Sample loaded");
-};
-document.getElementById("btnExport").onclick = ()=>{
-  const blob = new Blob([JSON.stringify(S,null,2)], {type:"application/json"});
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "decision-matrix-engine.json"; a.click();
-};
 function render(){
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("active", b.dataset.tab===tab));
-  ["board","work","rules","calib","audit"].forEach(t=>{
-    document.getElementById("tab-"+t).classList.toggle("hidden", t!==tab);
-  });
+  ["board","work","rules","calib","audit"].forEach(t=>document.getElementById("tab-"+t).classList.toggle("hidden", t!==tab));
   if(tab==="board") renderBoard();
   if(tab==="work") renderWork();
   if(tab==="rules") renderRules();
   if(tab==="calib") renderCalib();
   if(tab==="audit") renderAudit();
 }
+function kpi(v,l){return "<div class='kpi'><b>"+esc(v)+"</b><span>"+esc(l)+"</span></div>"}
 function renderBoard(){
-  const open = S.decisions.filter(d=>d.status!=="next");
-  const closed = S.decisions.filter(d=>d.status==="next" || d.outcome.loggedAt);
-  const pendingRules = S.rules.proposed.length;
-  const avgErr = avgError();
-  document.getElementById("kpis").innerHTML = [
-    kpi(open.length, "Open loops"),
-    kpi(closed.length, "Outcomes captured"),
-    kpi(pendingRules, "Proposed rules awaiting validation"),
-    kpi(avgErr==null?"—":avgErr+"%", "Mean prediction error"),
-    kpi(S.rules.active.length, "Active rules"),
-    kpi("v"+S.matrixVersion, "Matrix version")
-  ].join("");
-  const list = S.decisions.map(d=>{
-    const sel = d.options.find(o=>o.id===d.selectedOptionId);
-    return `<div class="opt" style="cursor:pointer" data-open="${d.id}">
-      <div class="row"><strong>${esc(d.title)}</strong><span class="pill">${esc(d.status)}</span>
-      ${sel?`<span class="pill gold">${esc(sel.name)} · ${scoreOption(sel)}</span>`:""}</div>
-      <div class="tiny">${esc(d.context||"No context yet")}</div>
-    </div>`;
-  }).join("") || `<p class="muted">No cases yet.</p>`;
-  document.getElementById("caseList").innerHTML = list;
-  document.getElementById("caseList").onclick = e=>{
-    const n = e.target.closest("[data-open]"); if(!n) return;
-    currentId = n.dataset.open; tab="work"; render();
-  };
+  const open=S.decisions.filter(d=>d.status!=="next");
+  const closed=S.decisions.filter(d=>d.status==="next"||d.outcome.loggedAt);
+  const avg=avgError();
+  document.getElementById("kpis").innerHTML=[kpi(open.length,"Open loops"),kpi(closed.length,"Outcomes captured"),kpi(S.rules.proposed.length,"Proposed rules awaiting validation"),kpi(avg==null?"—":avg+"%","Mean prediction error"),kpi(S.rules.active.length,"Active rules"),kpi("v"+S.matrixVersion,"Matrix version")].join("");
+  document.getElementById("caseList").innerHTML=S.decisions.map(d=>{const sel=d.options.find(o=>o.id===d.selectedOptionId); return "<div class='opt' style='cursor:pointer' data-open='"+d.id+"'><div class='row'><strong>"+esc(d.title)+"</strong><span class='pill'>"+esc(d.status)+"</span>"+(sel?"<span class='pill gold'>"+esc(sel.name)+" · "+scoreOption(sel)+"</span>":"")+"</div><div class='tiny'>"+esc(d.context||"No context yet")+"</div></div>";}).join("")||"<p class='muted'>No cases yet.</p>";
+  document.getElementById("caseList").onclick=e=>{const n=e.target.closest("[data-open]"); if(!n) return; currentId=n.dataset.open; tab="work"; render();};
 }
-function kpi(v,l){ return `<div class="kpi"><b>${esc(v)}</b><span>${esc(l)}</span></div>`; }
 function renderWork(){
-  const d = cur();
-  const rail = document.getElementById("loopRail");
-  if(!d){ document.getElementById("workLeft").innerHTML="<p>No case selected.</p>"; document.getElementById("workRight").innerHTML=""; rail.innerHTML=""; return; }
-  const idx = STEPS.indexOf(d.status);
-  rail.innerHTML = STEPS.map((s,i)=>`<div class="step ${i<idx?"done":i===idx?"on":""}">${STEP_LABEL[s]}</div>`).join("");
-  document.getElementById("workLeft").innerHTML = leftPane(d);
-  document.getElementById("workRight").innerHTML = rightPane(d);
+  const d=cur(); const rail=document.getElementById("loopRail");
+  if(!d){document.getElementById("workLeft").innerHTML="<p>No case selected.</p>"; document.getElementById("workRight").innerHTML=""; rail.innerHTML=""; return;}
+  const idx=STEPS.indexOf(d.status);
+  rail.innerHTML=STEPS.map((s,i)=>"<div class='step "+(i<idx?"done":i===idx?"on":"")+"'>"+STEP_LABEL[s]+"</div>").join("");
+  document.getElementById("workLeft").innerHTML=leftPane(d);
+  document.getElementById("workRight").innerHTML=rightPane(d);
   bindWork(d);
 }
 function leftPane(d){
-  return `
-    <h2>Case file</h2>
-    <label>Title</label>
-    <input id="fTitle" value="${esc(d.title)}" />
-    <label>Context / decision frame</label>
-    <textarea id="fContext">${esc(d.context)}</textarea>
-    <label>Hard constraints (one per line)</label>
-    <textarea id="fConstraints">${esc((d.constraints||[]).join("\n"))}</textarea>
-    <div class="row" style="margin-top:10px">
-      <button id="saveMeta">Save frame</button>
-      <button id="addOpt">Add option</button>
-    </div>
-    <h3 style="margin-top:16px">Options & matrix</h3>
-    ${d.options.map(o=>optionCard(d,o)).join("")}
-  `;
+  return "<h2>Case file</h2><label>Title</label><input id='fTitle' value='"+esc(d.title)+"' /><label>Context / decision frame</label><textarea id='fContext'>"+esc(d.context)+"</textarea><label>Hard constraints (one per line)</label><textarea id='fConstraints'>"+esc((d.constraints||[]).join("\n"))+"</textarea><div class='row' style='margin-top:10px'><button id='saveMeta'>Save frame</button><button id='addOpt'>Add option</button></div><h3 style='margin-top:16px'>Options & matrix</h3>"+d.options.map(o=>optionCard(d,o)).join("");
 }
 function optionCard(d,o){
-  const sc = scoreOption(o);
-  const best = Math.max(...d.options.map(x=>scoreOption(x)));
-  return `<div class="opt ${sc===best?"best":""}" data-opt="${o.id}">
-    <div class="row">
-      <input data-oname="${o.id}" value="${esc(o.name)}" style="flex:1;min-width:140px" />
-      <span class="score">${sc}</span>
-      <button data-pick="${o.id}" class="${d.selectedOptionId===o.id?"primary":""}">${d.selectedOptionId===o.id?"Selected":"Select"}</button>
-      ${d.options.length>2?`<button class="danger" data-del="${o.id}">×</button>`:""}
-    </div>
-    <textarea data-onotes="${o.id}" placeholder="Notes, assumptions, kill conditions">${esc(o.notes)}</textarea>
-    ${DIMS.map(([k,lab])=>`<div class="slider-row"><span>${lab}</span><input type="range" min="0" max="10" value="${o.scores[k]}" data-score="${o.id}:${k}" /><span>${o.scores[k]}</span></div>`).join("")}
-  </div>`;
+  const sc=scoreOption(o); const best=Math.max.apply(null,d.options.map(x=>scoreOption(x)));
+  return "<div class='opt "+(sc===best?"best":"")+"'><div class='row'><input data-oname='"+o.id+"' value='"+esc(o.name)+"' style='flex:1;min-width:140px' /><span class='score'>"+sc+"</span><button data-pick='"+o.id+"' class='"+(d.selectedOptionId===o.id?"primary":"")+"'>"+(d.selectedOptionId===o.id?"Selected":"Select")+"</button>"+(d.options.length>2?"<button class='danger' data-del='"+o.id+"'>×</button>":"")+"</div><textarea data-onotes='"+o.id+"' placeholder='Notes, assumptions, kill conditions'>"+esc(o.notes)+"</textarea>"+DIMS.map(([k,lab])=>"<div class='slider-row'><span>"+lab+"</span><input type='range' min='0' max='10' value='"+o.scores[k]+"' data-score='"+o.id+":"+k+"' /><span>"+o.scores[k]+"</span></div>").join("")+"</div>";
 }
 function rightPane(d){
-  const sel = d.options.find(o=>o.id===d.selectedOptionId);
-  return `
-    <h2>Recursive loop</h2>
-    <p class="tiny">Lock a prediction before action. Capture outcome after contact. Propose adjustments. Validate before activation.</p>
-    <div class="kpi"><span>Selected option</span><b>${sel?esc(sel.name):"None"}</b></div>
-    <label>Prediction (what should happen if we are right)</label>
-    <textarea id="pred">${esc(d.prediction.statement)}</textarea>
-    <label>Expected 1st-order effect</label><input id="e1" value="${esc(d.prediction.e1)}" />
-    <label>Expected 2nd-order effect</label><input id="e2" value="${esc(d.prediction.e2)}" />
-    <label>Expected 3rd-order effect</label><input id="e3" value="${esc(d.prediction.e3)}" />
-    <label>Forecast confidence (${d.prediction.confidence}%)</label>
-    <input type="range" id="pconf" min="1" max="99" value="${d.prediction.confidence}" />
-    <div class="row" style="margin-top:8px">
-      <button class="primary" id="lockPred" ${d.selectedOptionId?"":"disabled"}>Lock prediction</button>
-    </div>
-    <label>Action taken</label>
-    <input id="actWhat" value="${esc(d.action.what)}" placeholder="What was actually done" />
-    <label>When</label>
-    <input id="actWhen" value="${esc(d.action.when)}" placeholder="ISO date or plain text" />
-    <button id="logAct" ${d.prediction.lockedAt?"":"disabled"}>Log action</button>
-    <label>Observed outcome</label>
-    <textarea id="obs">${esc(d.outcome.observed)}</textarea>
-    <label>Observed 1st / 2nd / 3rd order</label>
-    <input id="o1" value="${esc(d.outcome.o1)}" placeholder="1st-order observed" />
-    <input id="o2" value="${esc(d.outcome.o2)}" placeholder="2nd-order observed" />
-    <input id="o3" value="${esc(d.outcome.o3)}" placeholder="3rd-order observed" />
-    <label>Unexpected effects</label>
-    <textarea id="unx">${esc(d.outcome.unexpected)}</textarea>
-    <label>Match to prediction (${d.outcome.match}%)</label>
-    <input type="range" id="match" min="0" max="100" value="${d.outcome.match}" />
-    <button id="logOut" ${d.action.loggedAt?"":"disabled"}>Capture outcome & compute error</button>
-    <div id="errBox">${errorBlock(d)}</div>
-  `;
+  const sel=d.options.find(o=>o.id===d.selectedOptionId);
+  return "<h2>Recursive loop</h2><p class='tiny'>Lock a prediction before action. Capture outcome after contact. Propose adjustments. Validate before activation.</p><div class='kpi'><span>Selected option</span><b>"+(sel?esc(sel.name):"None")+"</b></div><label>Prediction</label><textarea id='pred'>"+esc(d.prediction.statement)+"</textarea><label>Expected 1st-order effect</label><input id='e1' value='"+esc(d.prediction.e1)+"' /><label>Expected 2nd-order effect</label><input id='e2' value='"+esc(d.prediction.e2)+"' /><label>Expected 3rd-order effect</label><input id='e3' value='"+esc(d.prediction.e3)+"' /><label>Forecast confidence ("+d.prediction.confidence+"%)</label><input type='range' id='pconf' min='1' max='99' value='"+d.prediction.confidence+"' /><div class='row' style='margin-top:8px'><button class='primary' id='lockPred' "+(d.selectedOptionId?"":"disabled")+">Lock prediction</button></div><label>Action taken</label><input id='actWhat' value='"+esc(d.action.what)+"' /><label>When</label><input id='actWhen' value='"+esc(d.action.when)+"' /><button id='logAct' "+(d.prediction.lockedAt?"":"disabled")+">Log action</button><label>Observed outcome</label><textarea id='obs'>"+esc(d.outcome.observed)+"</textarea><label>Observed 1st / 2nd / 3rd order</label><input id='o1' value='"+esc(d.outcome.o1)+"' placeholder='1st-order observed' /><input id='o2' value='"+esc(d.outcome.o2)+"' placeholder='2nd-order observed' /><input id='o3' value='"+esc(d.outcome.o3)+"' placeholder='3rd-order observed' /><label>Unexpected effects</label><textarea id='unx'>"+esc(d.outcome.unexpected)+"</textarea><label>Match to prediction ("+d.outcome.match+"%)</label><input type='range' id='match' min='0' max='100' value='"+d.outcome.match+"' /><button id='logOut' "+(d.action.loggedAt?"":"disabled")+">Capture outcome & compute error</button><div id='errBox'>"+errorBlock(d)+"</div>";
 }
 function errorBlock(d){
-  if(d.error.predictionError==null) return `<p class="tiny">Error analysis appears after an outcome is captured.</p>`;
-  const e = d.error.predictionError;
-  const cls = e<=20?"ok":e<=45?"warn":"bad";
-  return `<div style="margin-top:12px">
-    <span class="pill ${cls}">Prediction error ${e}%</span>
-    <span class="pill">Confidence was ${d.prediction.confidence}%</span>
-    <p>${esc(d.error.analysis)}</p>
-    <label>Where were we wrong?</label>
-    <textarea id="wrong">${esc(d.error.whereWrong)}</textarea>
-    <label>Proposed model / rule adjustment</label>
-    <textarea id="prop">${esc((d.proposals[0]&&d.proposals[0].text)||"")}</textarea>
-    <div class="row">
-      <button id="submitProp">Queue proposed rule</button>
-      <button class="ok" id="closeLoop">Revise matrix & close loop</button>
-    </div>
-  </div>`;
+  if(d.error.predictionError==null) return "<p class='tiny'>Error analysis appears after an outcome is captured.</p>";
+  const e=d.error.predictionError; const cls=e<=20?"ok":e<=45?"warn":"bad";
+  return "<div style='margin-top:12px'><span class='pill "+cls+"'>Prediction error "+e+"%</span> <span class='pill'>Confidence was "+d.prediction.confidence+"%</span><p>"+esc(d.error.analysis)+"</p><label>Where were we wrong?</label><textarea id='wrong'>"+esc(d.error.whereWrong)+"</textarea><label>Proposed model / rule adjustment</label><textarea id='prop'>"+esc((d.proposals[0]&&d.proposals[0].text)||"")+"</textarea><div class='row'><button id='submitProp'>Queue proposed rule</button><button class='ok' id='closeLoop'>Revise matrix & close loop</button></div></div>";
 }
 function bindWork(d){
-  const $ = id => document.getElementById(id);
-  $("saveMeta").onclick = ()=>{
-    d.title = $("fTitle").value.trim()||d.title;
-    d.context = $("fContext").value;
-    d.constraints = $("fConstraints").value.split(/\n/).map(x=>x.trim()).filter(Boolean);
-    audit("edit", "Frame updated: "+d.title); save(); render(); toast("Frame saved");
-  };
-  $("addOpt").onclick = ()=>{
-    d.options.push(opt("New option","", {constraints:5,confidence:5,evidence:5,reversibility:5,control:5,first:5,second:5,third:5,downside:5}));
-    save(); render();
-  };
-  document.querySelectorAll("[data-score]").forEach(el=>{
-    el.oninput = ()=>{
-      const [oid,k] = el.dataset.score.split(":");
-      const o = d.options.find(x=>x.id===oid); o.scores[k]=Number(el.value);
-      save(); renderWork();
-    };
-  });
-  document.querySelectorAll("[data-oname]").forEach(el=>el.onchange=()=>{ d.options.find(x=>x.id===el.dataset.oname).name=el.value; save(); });
-  document.querySelectorAll("[data-onotes]").forEach(el=>el.onchange=()=>{ d.options.find(x=>x.id===el.dataset.onotes).notes=el.value; save(); });
-  document.querySelectorAll("[data-pick]").forEach(el=>el.onclick=()=>{ d.selectedOptionId=el.dataset.pick; if(d.status==="decide") setStatus(d,"predict"); save(); render(); });
-  document.querySelectorAll("[data-del]").forEach(el=>el.onclick=()=>{ d.options=d.options.filter(x=>x.id!==el.dataset.del); save(); render(); });
-  $("lockPred").onclick = ()=>{
-    d.prediction.statement=$("pred").value; d.prediction.e1=$("e1").value; d.prediction.e2=$("e2").value; d.prediction.e3=$("e3").value;
-    d.prediction.confidence=Number($("pconf").value); d.prediction.lockedAt=now();
-    setStatus(d,"act"); save(); render(); toast("Prediction locked");
-  };
-  $("pconf").oninput = ()=>{ d.prediction.confidence=Number($("pconf").value); };
-  $("logAct").onclick = ()=>{
-    d.action.what=$("actWhat").value; d.action.when=$("actWhen").value||now(); d.action.loggedAt=now();
-    setStatus(d,"observe"); save(); render(); toast("Action logged");
-  };
-  $("logOut").onclick = ()=>{
-    d.outcome.observed=$("obs").value; d.outcome.o1=$("o1").value; d.outcome.o2=$("o2").value; d.outcome.o3=$("o3").value;
-    d.outcome.unexpected=$("unx").value; d.outcome.match=Number($("match").value); d.outcome.loggedAt=now();
-    const err = Math.max(0, Math.min(100, 100-d.outcome.match));
-    d.error.predictionError = err;
-    const cal = d.prediction.confidence - d.outcome.match;
-    d.error.analysis = analysisText(d, err, cal);
-    if(!d.proposals.length) d.proposals.push({id:uid(), text: defaultProposal(d,err,cal), status:"draft"});
-    setStatus(d,"error"); save(); render(); toast("Outcome captured · error computed");
-  };
-  const wrong = $("wrong"); if(wrong) wrong.onchange=()=>{ d.error.whereWrong=wrong.value; save(); };
-  const prop = $("prop"); if(prop) prop.onchange=()=>{ if(!d.proposals[0]) d.proposals[0]={id:uid(),text:"",status:"draft"}; d.proposals[0].text=prop.value; save(); };
-  const sp = $("submitProp");
-  if(sp) sp.onclick=()=>{
-    const text = ($("prop").value||"").trim(); if(!text) return toast("Write a proposed adjustment first");
-    S.rules.proposed.unshift({id:uid(), status:"proposed", text, reason:"From case "+d.title, created:now(), evidence:[d.id], error:d.error.predictionError});
-    setStatus(d,"update"); save(); render(); toast("Queued for validation — not active");
-  };
-  const cl = $("closeLoop");
-  if(cl) cl.onclick=()=>{
-    S.matrixVersion += 1;
-    d.matrixVersion = S.matrixVersion;
-    setStatus(d,"next");
-    audit("revise", "Matrix bumped to v"+S.matrixVersion+" after "+d.title, {error:d.error.predictionError});
-    save(); tab="board"; render(); toast("Loop closed · matrix v"+S.matrixVersion);
-  };
+  const $=id=>document.getElementById(id);
+  $("saveMeta").onclick=()=>{d.title=$("fTitle").value.trim()||d.title; d.context=$("fContext").value; d.constraints=$("fConstraints").value.split(/\n/).map(x=>x.trim()).filter(Boolean); audit("edit","Frame updated: "+d.title); save(); render(); toast("Frame saved");};
+  $("addOpt").onclick=()=>{d.options.push(opt("New option","",{constraints:5,confidence:5,evidence:5,reversibility:5,control:5,first:5,second:5,third:5,downside:5})); save(); render();};
+  document.querySelectorAll("[data-score]").forEach(el=>el.oninput=()=>{const p=el.dataset.score.split(":"); const o=d.options.find(x=>x.id===p[0]); o.scores[p[1]]=Number(el.value); save(); renderWork();});
+  document.querySelectorAll("[data-oname]").forEach(el=>el.onchange=()=>{d.options.find(x=>x.id===el.dataset.oname).name=el.value; save();});
+  document.querySelectorAll("[data-onotes]").forEach(el=>el.onchange=()=>{d.options.find(x=>x.id===el.dataset.onotes).notes=el.value; save();});
+  document.querySelectorAll("[data-pick]").forEach(el=>el.onclick=()=>{d.selectedOptionId=el.dataset.pick; if(d.status==="decide") setStatus(d,"predict"); save(); render();});
+  document.querySelectorAll("[data-del]").forEach(el=>el.onclick=()=>{d.options=d.options.filter(x=>x.id!==el.dataset.del); save(); render();});
+  $("lockPred").onclick=()=>{d.prediction.statement=$("pred").value; d.prediction.e1=$("e1").value; d.prediction.e2=$("e2").value; d.prediction.e3=$("e3").value; d.prediction.confidence=Number($("pconf").value); d.prediction.lockedAt=now(); setStatus(d,"act"); save(); render(); toast("Prediction locked");};
+  $("pconf").oninput=()=>{d.prediction.confidence=Number($("pconf").value);};
+  $("logAct").onclick=()=>{d.action.what=$("actWhat").value; d.action.when=$("actWhen").value||now(); d.action.loggedAt=now(); setStatus(d,"observe"); save(); render(); toast("Action logged");};
+  $("logOut").onclick=()=>{d.outcome.observed=$("obs").value; d.outcome.o1=$("o1").value; d.outcome.o2=$("o2").value; d.outcome.o3=$("o3").value; d.outcome.unexpected=$("unx").value; d.outcome.match=Number($("match").value); d.outcome.loggedAt=now(); const err=Math.max(0,Math.min(100,100-d.outcome.match)); d.error.predictionError=err; const cal=d.prediction.confidence-d.outcome.match; d.error.analysis=analysisText(d,err,cal); if(!d.proposals.length) d.proposals.push({id:uid(),text:defaultProposal(d,err,cal),status:"draft"}); setStatus(d,"error"); save(); render(); toast("Outcome captured");};
+  const wrong=$("wrong"); if(wrong) wrong.onchange=()=>{d.error.whereWrong=wrong.value; save();};
+  const prop=$("prop"); if(prop) prop.onchange=()=>{if(!d.proposals[0]) d.proposals[0]={id:uid(),text:"",status:"draft"}; d.proposals[0].text=prop.value; save();};
+  const sp=$("submitProp"); if(sp) sp.onclick=()=>{const text=($("prop").value||"").trim(); if(!text) return toast("Write a proposed adjustment first"); S.rules.proposed.unshift({id:uid(),status:"proposed",text,reason:"From case "+d.title,created:now(),evidence:[d.id],error:d.error.predictionError}); setStatus(d,"update"); save(); render(); toast("Queued for validation — not active");};
+  const cl=$("closeLoop"); if(cl) cl.onclick=()=>{S.matrixVersion+=1; d.matrixVersion=S.matrixVersion; setStatus(d,"next"); audit("revise","Matrix bumped to v"+S.matrixVersion+" after "+d.title,{error:d.error.predictionError}); save(); tab="board"; render(); toast("Loop closed · matrix v"+S.matrixVersion);};
 }
-function analysisText(d, err, cal){
-  const bits = [];
-  bits.push("Prediction error is "+err+" points (100 \u2212 observer match).");
-  if(Math.abs(cal)>15) bits.push(cal>0 ? "Overconfident: stated confidence exceeded observed match." : "Underconfident: reality matched better than the forecast admitted.");
-  else bits.push("Confidence was reasonably calibrated on this case.");
-  if((d.outcome.unexpected||"").trim()) bits.push("Unexpected effects were recorded and should be treated as new evidence, not noise.");
-  bits.push("This is an inference, not a silent rewrite.");
-  return bits.join(" ");
-}
-function defaultProposal(d,err,cal){
-  if(err>=50) return "Increase the weight of evidence strength and downside when similar frames appear; require a pre-mortem before lock.";
-  if(cal>20) return "Haircut stated confidence by 15 points unless evidence strength \u2265 7.";
-  if((d.outcome.unexpected||"").trim()) return "Add an explicit unknown-unknowns scan for 2nd/3rd-order effects before prediction lock.";
-  return "Keep weights; log this case as a calibration point rather than a rule change.";
-}
+function analysisText(d,err,cal){const bits=["Prediction error is "+err+" points (100 minus observer match)."]; if(Math.abs(cal)>15) bits.push(cal>0?"Overconfident: stated confidence exceeded observed match.":"Underconfident: reality matched better than the forecast admitted."); else bits.push("Confidence was reasonably calibrated on this case."); if((d.outcome.unexpected||"").trim()) bits.push("Unexpected effects were recorded and should be treated as new evidence, not noise."); bits.push("This is an inference, not a silent rewrite."); return bits.join(" ");}
+function defaultProposal(d,err,cal){if(err>=50) return "Increase the weight of evidence strength and downside when similar frames appear; require a pre-mortem before lock."; if(cal>20) return "Haircut stated confidence by 15 points unless evidence strength is at least 7."; if((d.outcome.unexpected||"").trim()) return "Add an explicit unknown-unknowns scan for 2nd/3rd-order effects before prediction lock."; return "Keep weights; log this case as a calibration point rather than a rule change.";}
 function renderRules(){
-  const box = document.getElementById("rulesBox");
-  const block = (title, arr, actions)=>`
-    <h3 style="margin-top:16px">${title} (${arr.length})</h3>
-    ${arr.map(r=>`<div class="rule" data-rule="${r.id}">
-      <div>${esc(r.text)}</div>
-      <div class="tiny">${esc(r.reason||"")} · ${esc(r.status)} · ${esc((r.created||"").slice(0,16))}</div>
-      <div class="row">${actions}</div>
-    </div>`).join("")||`<p class="tiny">None.</p>`}`;
-  box.innerHTML = block("Proposed — awaiting validation", S.rules.proposed,
-      `<button class="ok" data-act="activate">Validate → active</button><button class="danger" data-act="reject">Reject</button>`)
-    + block("Active rules", S.rules.active, `<button data-act="retire">Retire</button>`)
-    + block("Rejected / retired", S.rules.rejected, "");
-  box.onclick = e=>{
-    const act = e.target.dataset.act; if(!act) return;
-    const wrap = e.target.closest("[data-rule]"); const id = wrap.dataset.rule;
-    const move = (from,to,status)=>{
-      const i = S.rules[from].findIndex(r=>r.id===id); if(i<0) return;
-      const r = S.rules[from].splice(i,1)[0]; r.status=status; if(status==="active") r.activated=now();
-      S.rules[to].unshift(r); audit("rule", r.text.slice(0,80), {from,to});
-    };
-    if(act==="activate") move("proposed","active","active");
-    if(act==="reject") move("proposed","rejected","rejected");
-    if(act==="retire") move("active","rejected","retired");
-    save(); render();
-  };
+  const box=document.getElementById("rulesBox");
+  const block=(title,arr,actions)=>"<h3 style='margin-top:16px'>"+title+" ("+arr.length+")</h3>"+(arr.map(r=>"<div class='rule' data-rule='"+r.id+"'><div>"+esc(r.text)+"</div><div class='tiny'>"+esc(r.reason||"")+" · "+esc(r.status)+"</div><div class='row'>"+actions+"</div></div>").join("")||"<p class='tiny'>None.</p>");
+  box.innerHTML=block("Proposed — awaiting validation",S.rules.proposed,"<button class='ok' data-act='activate'>Validate → active</button><button class='danger' data-act='reject'>Reject</button>")+block("Active rules",S.rules.active,"<button data-act='retire'>Retire</button>")+block("Rejected / retired",S.rules.rejected,"");
+  box.onclick=e=>{const act=e.target.dataset.act; if(!act) return; const wrap=e.target.closest("[data-rule]"); const id=wrap.dataset.rule; const move=(from,to,status)=>{const i=S.rules[from].findIndex(r=>r.id===id); if(i<0) return; const r=S.rules[from].splice(i,1)[0]; r.status=status; if(status==="active") r.activated=now(); S.rules[to].unshift(r); audit("rule", r.text.slice(0,80), {from,to});}; if(act==="activate") move("proposed","active","active"); if(act==="reject") move("proposed","rejected","rejected"); if(act==="retire") move("active","rejected","retired"); save(); render();};
 }
-function avgError(){
-  const xs = S.decisions.map(d=>d.error.predictionError).filter(v=>v!=null);
-  if(!xs.length) return null;
-  return Math.round(xs.reduce((a,b)=>a+b,0)/xs.length);
-}
+function avgError(){const xs=S.decisions.map(d=>d.error.predictionError).filter(v=>v!=null); if(!xs.length) return null; return Math.round(xs.reduce((a,b)=>a+b,0)/xs.length);}
 function renderCalib(){
-  const closed = S.decisions.filter(d=>d.error.predictionError!=null);
-  const over = closed.filter(d=>d.prediction.confidence - d.outcome.match > 15).length;
-  const under = closed.filter(d=>d.outcome.match - d.prediction.confidence > 15).length;
-  document.getElementById("calibKpis").innerHTML = [
-    kpi(closed.length, "Scored experiments"),
-    kpi(avgError()==null?"—":avgError()+"%", "Mean error"),
-    kpi(over+" / "+under, "Overconfident / underconfident")
-  ].join("");
-  const rows = closed.map(d=>`<tr>
-    <td>${esc(d.title)}</td>
-    <td>${d.prediction.confidence}%</td>
-    <td>${d.outcome.match}%</td>
-    <td>${d.error.predictionError}%</td>
-    <td>${d.prediction.confidence-d.outcome.match}</td>
-  </tr>`).join("") || `<tr><td colspan="5" class="muted">No completed loops yet. Treat the first public run as experiment zero.</td></tr>`;
-  document.getElementById("calibBox").innerHTML = `<table>
-    <thead><tr><th>Case</th><th>Forecast</th><th>Observed match</th><th>Error</th><th>Cal. gap</th></tr></thead>
-    <tbody>${rows}</tbody></table>
-    <p class="tiny" style="margin-top:10px">Calibration gap = forecast confidence minus observed match. Large positive gap = overconfidence. The point is not a smaller ego; it is a tighter instrument.</p>`;
+  const closed=S.decisions.filter(d=>d.error.predictionError!=null);
+  const over=closed.filter(d=>d.prediction.confidence-d.outcome.match>15).length;
+  const under=closed.filter(d=>d.outcome.match-d.prediction.confidence>15).length;
+  document.getElementById("calibKpis").innerHTML=[kpi(closed.length,"Scored experiments"),kpi(avgError()==null?"—":avgError()+"%","Mean error"),kpi(over+" / "+under,"Overconfident / underconfident")].join("");
+  const rows=closed.map(d=>"<tr><td>"+esc(d.title)+"</td><td>"+d.prediction.confidence+"%</td><td>"+d.outcome.match+"%</td><td>"+d.error.predictionError+"%</td><td>"+(d.prediction.confidence-d.outcome.match)+"</td></tr>").join("")||"<tr><td colspan='5' class='muted'>No completed loops yet.</td></tr>";
+  document.getElementById("calibBox").innerHTML="<table><thead><tr><th>Case</th><th>Forecast</th><th>Observed match</th><th>Error</th><th>Cal. gap</th></tr></thead><tbody>"+rows+"</tbody></table><p class='tiny' style='margin-top:10px'>Calibration gap = forecast confidence minus observed match. Large positive gap = overconfidence.</p>";
 }
-function renderAudit(){
-  document.getElementById("auditBox").innerHTML = S.audit.map(a=>`<div class="item">
-    <div class="tiny">${esc(a.t)} · ${esc(a.kind)} · matrix ${esc(a.matrixVersion)}</div>
-    <div>${esc(a.detail)}</div>
-  </div>`).join("") || "<p class='muted'>Empty.</p>";
-}
-render();
+function renderAudit(){document.getElementById("auditBox").innerHTML=S.audit.map(a=>"<div class='item'><div class='tiny'>"+esc(a.t)+" · "+esc(a.kind)+" · matrix "+esc(a.matrixVersion)+"</div><div>"+esc(a.detail)+"</div></div>").join("")||"<p class='muted'>Empty.</p>";}
+function boot(){try{S=load(); if(!S.weights) S.weights=Object.assign({},DEFAULT_WEIGHTS); if(!S.rules) S.rules={proposed:[],active:[],rejected:[]}; if(!S.audit) S.audit=[]; if(!Array.isArray(S.decisions)||!S.decisions.length) S=seed(); currentId=S.decisions[0].id; bindChrome(); save(); render();}catch(err){const box=document.createElement("div"); box.style.cssText="margin:16px;padding:14px;border:1px solid #e26d6d;color:#f0b3b3"; box.textContent="Engine failed to start: "+(err&&err.message?err.message:err); document.body.appendChild(box); console.error(err);}}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot); else boot();
 </script>
 </body>
 </html>
